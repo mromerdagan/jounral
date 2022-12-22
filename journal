@@ -1,0 +1,128 @@
+#!/bin/bash
+
+set -e
+
+die() {
+	echo >&2 "$@"
+	exit 1
+}
+
+usage() {
+	echo >&2 "Usage:"
+	echo >&2 "    $me [--type <journal-type>]"
+	echo >&2 "    $me show [<time-specifier>] [--type <journal-type>]"
+	echo >&2 ""
+	echo >&2 "<time-specifier> can be DATE STRING accepted by 'date', or range YY-MM-DD:YY-MM-DD"
+	echo >&2 "                 where the first date is earlier than the second"
+	echo >&2 ""
+	echo >&2 "Options:"
+	echo >&2 "    --type, -t <type>  journal type: Defaults to daily (can be anything, works as 'namespace')"
+	exit 1
+}
+
+action=edit
+journal_type=daily
+time_spec=today
+
+while [ -n "$1" ]; do
+	case "$1" in
+		--type|-t)
+			journal_type="$2"
+			shift
+			shift
+			;;
+		show)
+			action=show
+			shift
+			if ! echo "$1" | grep --silent -- --; then
+				time_spec="$1"
+				shift
+			fi
+			;;
+		*)
+			usage
+			;;
+	esac
+done
+
+journal_dir="$HOME/journal/$journal_type"
+if ! [ -d "$journal_dir" ]; then
+	if [ "$action" = edit ]; then
+		mkdir -p "$journal_dir"
+	else
+		die "E: Missing journal dir: '$journal_dir'"
+	fi
+fi
+
+today=$(date +"%Y-%m-%d")
+
+get_date_range() {
+	local time_spec="$1"
+	ret=""
+	if echo "$time_spec" | grep --silent ':'; then
+		# Split the time_spec string into start and end date variables
+		start_date=$(echo "$time_spec" | cut -d':' -f1)
+		end_date=$(echo "$time_spec" | cut -d':' -f2)
+
+		# Validate end date is later than the start date
+		[ "$start_date" \< "$end_date" ] || die "E: End date must be later than start date."
+
+		# Initialize the current date to the start date
+		iteration_date=$start_date
+		ret="$iteration_date"
+		while [ "$iteration_date" != "$end_date" ]; do
+			iteration_date=$(date -d "$iteration_date + 1 day" +%Y-%m-%d) # Increment the current date by one day
+			ret="$ret $iteration_date"
+		done
+	else
+		ret=$(date --date="$time_spec" +"%Y-%m-%d")
+	fi
+	echo "$ret"
+}
+
+get_logfiles() {
+	local date_range="$1"
+
+	for d in $date_range; do
+		logfile="$journal_dir/$d.md"
+		[ -e "$logfile" ] && logfiles="$logfiles $logfile"
+	done
+	echo "$logfiles"
+}
+
+case "$action" in
+	edit)
+		log="$journal_dir/$today.md"
+		[ -e "$log" ] || echo "# date: $today" > "$log" # First open puts date header in the file
+		exec vim "$log"
+		;;
+	show)
+		date_range=$(get_date_range "$time_spec")
+		logfiles=$(get_logfiles "$date_range")
+		#echo "$logfiles" && exit
+		count=$(wc -w <<< "$logfiles")
+		case "$count" in
+			0)
+				exit 0
+				;;
+			1)
+				cat $logfiles
+				;;
+			*)
+				cat $logfiles | less
+				;;
+		esac
+		#if [ "$count" -gt 1 ]; then
+		#	cat $logfiles | less
+		#else
+		#	cat $logfiles
+		#fi
+		;;
+	*)
+		die "Unknown action: '$action'"
+		;;
+esac
+
+
+
+
