@@ -1,3 +1,9 @@
+jounral (1.1) unstable; urgency=medium
+
+  * Add README.md in top dir (for github)
+
+ -- Omer Dagan <omer.dagan@gm.com>  Thu, 22 Dec 2022 17:06:45 -0500
+
 jounral (1.0) unstable; urgency=medium
 
   * Initial Release: debianize package
