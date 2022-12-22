@@ -1,0 +1,13 @@
+Source: jounral
+Section: admin
+Priority: optional
+Maintainer: Omer Dagan <mr.omer.dagan@gmail.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.4.1
+
+Package: jounral
+Architecture: all
+Depends: ${misc:Depends}
+Description: Console jounraling app
+ Console jounraling app
+ Uses EDITOR to document processes by date
