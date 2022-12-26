@@ -1,3 +1,9 @@
+jounral (1.3) unstable; urgency=medium
+
+  * Make <time-spec> mandatory for 'show' action
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Mon, 26 Dec 2022 22:14:11 +0200
+
 jounral (1.2) unstable; urgency=medium
 
   * Improve github readme file

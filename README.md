@@ -8,7 +8,7 @@ To use the `journal` script, you can run it with the following options:
 
 ```
 $ journal [--type <journal-type>]
-$ journal show [<time-specifier>] [--type <journal-type>]
+$ journal show <time-specifier> [--type <journal-type>]
 ```
 
 
@@ -39,10 +39,10 @@ Here are a few examples of how you might use the `journal` script:
 $ journal
 ```
 
-- To view your journal entries for the past week:
+- To view your journal entry for 3 days ago:
 
 ```
-$ journal show "1 week ago"
+$ journal show "3 days ago"
 ```
 
 - To view your journal entries for the month of June 2021:
@@ -50,12 +50,12 @@ $ journal show "1 week ago"
 `$ journal show "2021-06-01:2021-06-30"`
 
 
-- To create a new journal entry for a specific project:
+- To create a new journal entry for a specific project named "coaching-sessions":
 
-`$ journal --type project`
+`$ journal --type coaching-sessions`
 
 
-- To view your journal entries for a specific project:
+- To view your journal entries for a specific project from last week:
 
-`$ journal show --type project`
+`$ journal show "last week" --type coaching-sessions`
 

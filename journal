@@ -10,7 +10,7 @@ die() {
 usage() {
 	echo >&2 "Usage:"
 	echo >&2 "    $me [--type <journal-type>]"
-	echo >&2 "    $me show [<time-specifier>] [--type <journal-type>]"
+	echo >&2 "    $me show <time-specifier> [--type <journal-type>]"
 	echo >&2 ""
 	echo >&2 "<time-specifier> can be DATE STRING accepted by 'date', or range YY-MM-DD:YY-MM-DD"
 	echo >&2 "                 where the first date is earlier than the second"
@@ -34,10 +34,9 @@ while [ -n "$1" ]; do
 		show)
 			action=show
 			shift
-			if ! echo "$1" | grep --silent -- --; then
-				time_spec="$1"
-				shift
-			fi
+			time_spec="$1"
+			[ -n "$time_spec" ] || usage
+			shift
 			;;
 		*)
 			usage
