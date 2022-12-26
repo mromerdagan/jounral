@@ -22,7 +22,7 @@ usage() {
 
 action=edit
 journal_type=daily
-time_spec=today
+time_spec=
 
 while [ -n "$1" ]; do
 	case "$1" in
@@ -58,26 +58,58 @@ today=$(date +"%Y-%m-%d")
 get_date_range() {
 	local time_spec="$1"
 	ret=""
-	if echo "$time_spec" | grep --silent ':'; then
-		# Split the time_spec string into start and end date variables
-		start_date=$(echo "$time_spec" | cut -d':' -f1)
-		end_date=$(echo "$time_spec" | cut -d':' -f2)
+	#if echo "$time_spec" | grep --silent ':'; then
+	case "$time_spec" in
+		*:*)
+			# Split the time_spec string into start and end date variables
+			start_date=$(echo "$time_spec" | cut -d':' -f1)
+			end_date=$(echo "$time_spec" | cut -d':' -f2)
 
-		# Validate end date is later than the start date
-		[ "$start_date" \< "$end_date" ] || die "E: End date must be later than start date."
+			# Validate end date is later than the start date
+			[ "$start_date" \< "$end_date" ] || die "E: End date must be later than start date."
+			;;
+		"last week"|"last month"|"last year")
+			start_date=$(date -d "$time_spec" +%Y-%m-%d)
+			end_date="$today"
+			;;
+		"prev week"|"prev month"|"prev year")
+			die "Not implemented time specifier (TODO)"
+			;;
+		"curr week")
+			if [ "$(date +%u)" -eq 7 ]; then # Today is Sunday, show one day for that specifier
+				start_date="$today"
+			else
+				start_date=$(date -d "last Sun" +%Y-%m-%d)
+			fi
+			;;
+		"curr month")
+			start_date=$(date +%Y-%m-01)
+			end_date="$today"
+			;;
+		"curr year")
+			start_date=$(date +%Y-01-01)
+			end_date="$today"
+			;;
+		*)
+			start_date=$(date -d "$time_spec" +%Y-%m-%d)
+			end_date="$start_date"
+			;;
+	esac
 
-		# Initialize the current date to the start date
-		iteration_date=$start_date
-		ret="$iteration_date"
-		while [ "$iteration_date" != "$end_date" ]; do
-			iteration_date=$(date -d "$iteration_date + 1 day" +%Y-%m-%d) # Increment the current date by one day
-			ret="$ret $iteration_date"
-		done
-	else
-		ret=$(date --date="$time_spec" +"%Y-%m-%d")
-	fi
+	# Initialize the current date to the start date
+	iteration_date=$start_date
+	ret="$iteration_date"
+	while [ "$iteration_date" != "$end_date" ]; do
+		iteration_date=$(date -d "$iteration_date + 1 day" +%Y-%m-%d) # Increment the current date by one day
+		ret="$ret $iteration_date"
+	done
 	echo "$ret"
 }
+
+#get_date_range "last Thu"
+#get_date_range "last week"
+#get_date_range "2022-11-28:2022-12-30"
+#get_date_range "curr week"
 
 get_logfiles() {
 	local date_range="$1"
