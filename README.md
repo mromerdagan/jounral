@@ -14,11 +14,20 @@ $ journal show [<time-specifier>] [--type <journal-type>]
 
 ### Time Specifier
 
-The `journal` script allows you to specify a time period to view your journal entries. You can use a date string accepted by the `date` command, or a range in the format `YY-MM-DD:YY-MM-DD` where the first date is earlier than the second.
+- The `journal` script allows you to specify a time period to view your journal entries.
+- Time specifier can be either one day (=one record), or range of days.
+- Single day can be any date string accepted by the `date` command. Examples: `2022-12-26`,
+  `yesterday`, `last Thu` etc.
+- Range can be:
+  * `YY-MM-DD:YY-MM-DD` where the first date is earlier than the second, or it can
+  * last week/month/year
+  * current week/month/year
+  * all
 
 ### Options
 
-- `--type`, `-t`: Specify the journal type, or "namespace," for organizing your entries. The default is "daily."
+`--type`, `-t`: Specify the journal type, or "namespace," for organizing your entries. The default 
+is "daily". Other types might be "weekly", "workout", "coaching-sessions" etc.
 
 ## Examples
 

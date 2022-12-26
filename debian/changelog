@@ -1,3 +1,9 @@
+jounral (1.2) unstable; urgency=medium
+
+  * Improve github readme file
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Mon, 26 Dec 2022 22:04:07 +0200
+
 jounral (1.1) unstable; urgency=medium
 
   * Add README.md in top dir (for github)
