@@ -81,6 +81,7 @@ get_date_range() {
 			else
 				start_date=$(date -d "last Sun" +%Y-%m-%d)
 			fi
+			end_date="$today"
 			;;
 		"curr month")
 			start_date=$(date +%Y-%m-01)

@@ -1,3 +1,9 @@
+jounral (1.5) unstable; urgency=medium
+
+  * time spec: fix bug with "curr week" time spec
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Tue, 27 Dec 2022 22:26:28 +0200
+
 jounral (1.4) unstable; urgency=medium
 
   * Implement some range based time specifiers (last/curr week/month/year)
