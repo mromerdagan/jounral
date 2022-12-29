@@ -1,3 +1,9 @@
+jounral (1.6) UNRELEASED; urgency=medium
+
+  * Improve help message
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Thu, 29 Dec 2022 21:00:39 +0200
+
 jounral (1.5) unstable; urgency=medium
 
   * time spec: fix bug with "curr week" time spec

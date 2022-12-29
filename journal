@@ -7,13 +7,18 @@ die() {
 	exit 1
 }
 
+me=$(basename $0)
 usage() {
 	echo >&2 "Usage:"
-	echo >&2 "    $me [--type <journal-type>]"
-	echo >&2 "    $me show <time-specifier> [--type <journal-type>]"
+	echo >&2 "    $me [--type <journal-type>]                         # Start editing journal record for today"
+	echo >&2 "    $me show <time-specifier> [--type <journal-type>]   # Retrieve journal record(s)"
 	echo >&2 ""
-	echo >&2 "<time-specifier> can be DATE STRING accepted by 'date', or range YY-MM-DD:YY-MM-DD"
-	echo >&2 "                 where the first date is earlier than the second"
+	echo >&2 "<time-specifier> can be either:"
+	echo >&2 "                 DATE STRING accepted by 'date'"
+	echo >&2 "                 YY-MM-DD:YY-MM-DD date range"
+	echo >&2 "                 last week/month/year retrives last 7/30/365 days"
+	echo >&2 "                 prev week/month/year retrives prior week/month/year"
+	echo >&2 "                 curr week/month/year retrives all days started this week/month/year"
 	echo >&2 ""
 	echo >&2 "Options:"
 	echo >&2 "    --type, -t <type>  journal type: Defaults to daily (can be anything, works as 'namespace')"
