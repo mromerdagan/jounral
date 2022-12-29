@@ -130,7 +130,12 @@ get_logfiles() {
 case "$action" in
 	edit)
 		log="$journal_dir/$today.md"
-		[ -e "$log" ] || echo "# date: $today" > "$log" # First open puts date header in the file
+		if ! [ -e "$log" ]; then
+			echo "# date: $today" > "$log" # First open puts date header in the file
+			echo >> "$log"
+			echo >> "$log"
+			echo "tags: " >> "$log"
+		fi
 		exec vim "$log"
 		;;
 	show)

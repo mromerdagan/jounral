@@ -1,5 +1,6 @@
-jounral (1.6) UNRELEASED; urgency=medium
+jounral (1.6) unstable; urgency=medium
 
+  * Add 'tags:' at the end of a journal file upon creation
   * Improve help message
 
  -- Omer Dagan <mr.omer.dagan@gmail.com>  Thu, 29 Dec 2022 21:00:39 +0200
