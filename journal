@@ -11,6 +11,7 @@ me=$(basename $0)
 usage() {
 	echo >&2 "Usage:"
 	echo >&2 "    $me [--type <journal-type>]                         # Start editing journal record for today"
+	echo >&2 "    $me edit <time-specifier> [--type <journal-type>]   # Start editing journal record for certain date"
 	echo >&2 "    $me show <time-specifier> [--type <journal-type>]   # Retrieve journal record(s)"
 	echo >&2 "    $me datadir [--type <journal-type>]                 # Return path to datadir"
 	echo >&2 ""
@@ -20,6 +21,8 @@ usage() {
 	echo >&2 "                 last week/month/year retrives last 7/30/365 days"
 	echo >&2 "                 prev week/month/year retrives prior week/month/year"
 	echo >&2 "                 curr week/month/year retrives all days started this week/month/year"
+	echo >&2 "                 last # last record"
+	echo >&2 "For 'edit' action, <time-specifier> cannot be range"
 	echo >&2 ""
 	echo >&2 "Options:"
 	echo >&2 "    --type, -t <type>  journal type: Defaults to daily (can be anything, works as 'namespace')"
@@ -37,11 +40,31 @@ while [ -n "$1" ]; do
 			shift
 			shift
 			;;
+		edit)
+			action=edit
+			shift
+			time_spec="$1"
+			shift
+			if [ "$time_spec" = last ] || [ "$time_spec" = prev ] || [ "$time_spec" = curr ]; then
+				if [ -n "$1" ]; then
+					time_spec="$time_spec $1"
+					shift
+				fi
+			fi
+			;;
 		show)
 			action=show
 			shift
 			time_spec="$1"
+			shift
 			[ -n "$time_spec" ] || usage
+			if [ "$time_spec" = last ] || [ "$time_spec" = prev ] || [ "$time_spec" = curr ]; then
+				if [ -n "$1" ]; then
+					time_spec="$time_spec $1"
+					shift
+				fi
+			fi
+			;;
 			datadir)
 				action=datadir
 			shift
@@ -75,6 +98,11 @@ get_date_range() {
 
 			# Validate end date is later than the start date
 			[ "$start_date" \< "$end_date" ] || die "E: End date must be later than start date."
+			;;
+		last)
+			start_date=$(basename $(ls "$journal_dir"/*.md | sort -rV | head -1) .md)
+			[ -n "$start_date" ] || die "Failed to find last record in '$journal_dir'"
+			end_date="$start_date"
 			;;
 		"last week"|"last month"|"last year")
 			start_date=$(date -d "$time_spec" +%Y-%m-%d)
@@ -132,14 +160,26 @@ get_logfiles() {
 
 case "$action" in
 	edit)
-		log="$journal_dir/$today.md"
-		if ! [ -e "$log" ]; then
-			echo "# date: $today" > "$log" # First open puts date header in the file
-			echo >> "$log"
-			echo >> "$log"
-			echo "tags: " >> "$log"
+		date_range=$(get_date_range "$time_spec")
+		count=$(wc -w <<< "$date_range")
+		case "$count" in
+			0)
+				die "E: Failed to retrive date from time spec: '$time_spec'"
+				;;
+			1)
+				logfile="$journal_dir/$date_range.md"
+				;;
+			*)
+				die "E: Date range (multiple dates) is not allowed for 'edit'"
+				;;
+		esac
+		if ! [ -e "$logfile" ]; then
+			echo "# date: $today" > "$logfile" # First open puts date header in the file
+			echo >> "$logfile"
+			echo >> "$logfile"
+			echo "tags: " >> "$logfile"
 		fi
-		exec vim "$log"
+		exec vim "$logfile"
 		;;
 	datadir)
 		datadir="$journal_dir/data/$today"
