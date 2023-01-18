@@ -12,6 +12,7 @@ usage() {
 	echo >&2 "Usage:"
 	echo >&2 "    $me [--type <journal-type>]                         # Start editing journal record for today"
 	echo >&2 "    $me show <time-specifier> [--type <journal-type>]   # Retrieve journal record(s)"
+	echo >&2 "    $me datadir [--type <journal-type>]                 # Return path to datadir"
 	echo >&2 ""
 	echo >&2 "<time-specifier> can be either:"
 	echo >&2 "                 DATE STRING accepted by 'date'"
@@ -27,7 +28,7 @@ usage() {
 
 action=edit
 journal_type=daily
-time_spec=
+time_spec=today
 
 while [ -n "$1" ]; do
 	case "$1" in
@@ -41,6 +42,8 @@ while [ -n "$1" ]; do
 			shift
 			time_spec="$1"
 			[ -n "$time_spec" ] || usage
+			datadir)
+				action=datadir
 			shift
 			;;
 		*)
@@ -137,6 +140,11 @@ case "$action" in
 			echo "tags: " >> "$log"
 		fi
 		exec vim "$log"
+		;;
+	datadir)
+		datadir="$journal_dir/data/$today"
+		[ -d "$datadir" ] || mkdir -p "$datadir"
+		echo "Datadir ready: $datadir"
 		;;
 	show)
 		date_range=$(get_date_range "$time_spec")

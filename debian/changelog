@@ -1,3 +1,9 @@
+jounral (1.7) UNRELEASED; urgency=medium
+
+  * Add 'datadir' action. Creates a datadir for additional files/data for date
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Wed, 18 Jan 2023 21:58:43 +0200
+
 jounral (1.6) unstable; urgency=medium
 
   * Add 'tags:' at the end of a journal file upon creation
