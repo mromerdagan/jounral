@@ -1,3 +1,9 @@
+jounral (1.8) unstable; urgency=medium
+
+  * Add 'list-tags' action. Will be followed by adding 'show-tag' action
+
+ -- Omer Dagan <mr.omer.dagan@gmail.com>  Wed, 18 Jan 2023 22:08:28 +0200
+
 jounral (1.7) unstable; urgency=medium
 
   * Add 'datadir' action. Creates a datadir for additional files/data for date
